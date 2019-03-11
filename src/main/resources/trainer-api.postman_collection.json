@@ -1,0 +1,102 @@
+{
+	"info": {
+		"_postman_id": "9fe6b31b-62f7-47e0-94dd-874cdf071b74",
+		"name": "pokemon-trainers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all trainers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9e42d397-5766-478e-b71e-a57030c0b3cb",
+						"exec": [
+							"pm.test(\"all trainers\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.length).to.eq(2);",
+							"});",
+							"",
+							"pm.test(\"ash\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[0].name).to.eq(\"Ash\");",
+							"});",
+							"",
+							"pm.test(\"misty\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData[1].name).to.eq(\"Misty\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8081/trainers/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"trainers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/trainers/Ash",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9b0d300c-01d6-465f-942d-21fdc23b6966",
+						"exec": [
+							"pm.test(\"ash\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.name).to.eq(\"Ash\");",
+							"});",
+							"",
+							"pm.test(\"ash teams\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.team.length).to.eq(1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8081/trainers/Ash",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"trainers",
+						"Ash"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
