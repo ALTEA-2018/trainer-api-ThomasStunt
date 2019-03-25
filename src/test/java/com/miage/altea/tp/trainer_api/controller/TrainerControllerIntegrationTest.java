@@ -89,7 +89,7 @@ class TrainerControllerIntegrationTest {
                 .getForObject("http://localhost:" + port + "/trainers/", Trainer[].class);
 
         assertNotNull(trainers);
-        assertEquals(2, trainers.length);
+        assertEquals(3, trainers.length);
 
         assertEquals("Ash", trainers[0].getName());
         assertEquals("Misty", trainers[1].getName());

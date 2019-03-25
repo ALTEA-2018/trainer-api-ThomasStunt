@@ -1,6 +1,7 @@
 package com.miage.altea.tp.trainer_api.controller;
 
 
+import com.miage.altea.tp.trainer_api.bo.Trainer;
 import com.miage.altea.tp.trainer_api.service.TrainerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -78,7 +79,7 @@ class TrainerControllerTest {
     @Test
     void createTrainer_shouldBeAnnotated() throws NoSuchMethodException {
         var createTrainer =
-                TrainerController.class.getDeclaredMethod("createTrainer", String.class);
+                TrainerController.class.getDeclaredMethod("createTrainer", Trainer.class);
         var getMapping = createTrainer.getAnnotation(PostMapping.class);
 
         assertNotNull(getMapping);
@@ -92,6 +93,6 @@ class TrainerControllerTest {
         var getMapping = deleteTrainer.getAnnotation(DeleteMapping.class);
 
         assertNotNull(getMapping);
-        assertArrayEquals(new String[]{"/"}, getMapping.value());
+        assertArrayEquals(new String[]{"/{name}"}, getMapping.value());
     }
 }
