@@ -11,10 +11,10 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,6 +44,7 @@ class TrainerControllerIntegrationTest {
     void getTrainers_shouldThrowAnUnauthorized(){
         var responseEntity = this.restTemplate
                 .getForEntity("http://localhost:" + port + "/trainers/Ash", Trainer.class);
+
         assertNotNull(responseEntity);
         assertEquals(401, responseEntity.getStatusCodeValue());
     }
@@ -63,48 +64,34 @@ class TrainerControllerIntegrationTest {
     }
 
     @Test
-    void getAllTrainers_shouldReturnAshAndMistyAndBugTrainer() {
+    void addTrainer_withTrainer_shouldReturnAsh() {
+        var trainer = new Trainer("mock");
+        trainer.setTeam(List.of(new Pokemon(120, 18), new Pokemon(125, 30)));
+
+        var response = this.restTemplate
+                .withBasicAuth(username, password)
+                .postForEntity("http://localhost:" + port + "/trainers/", trainer, Trainer.class);
+
+        var responseTrainer = response.getBody();
+        assertNotNull(responseTrainer);
+        assertEquals("mock", responseTrainer.getName());
+        assertEquals(2, responseTrainer.getTeam().size());
+
+        assertEquals(120, responseTrainer.getTeam().get(0).getPokemonType());
+        assertEquals(18, responseTrainer.getTeam().get(0).getLevel());
+        assertEquals(200, response.getStatusCode().value());
+    }
+
+    @Test
+    void getAllTrainers_shouldReturnAshAndMisty() {
         var trainers = this.restTemplate
                 .withBasicAuth(username, password)
                 .getForObject("http://localhost:" + port + "/trainers/", Trainer[].class);
+
         assertNotNull(trainers);
         assertEquals(2, trainers.length);
 
         assertEquals("Ash", trainers[0].getName());
-        assertEquals("BugCatcher", trainers[1].getName());
-        //assertEquals("Misty", trainers[2].getName());
-    }
-
-    @Test
-    void createTrainer_shouldReturnBugCatcher() {
-        var insert = new Trainer();
-        insert.setName("BugCatcher");
-        var pok1 = new Pokemon(13, 6);
-        var pok2 = new Pokemon(10, 6);
-        insert.setTeam(List.of(pok1, pok2));
-
-        this.controller.createTrainer(insert);
-
-        var BugCatcher = this.restTemplate
-                .withBasicAuth(username, password)
-                .getForObject("http://localhost:" + port + "/trainers/BugCatcher", Trainer.class);
-        assertNotNull(BugCatcher);
-        assertEquals("BugCatcher", BugCatcher.getName());
-        assertEquals(2, BugCatcher.getTeam().size());
-
-        assertEquals(13, BugCatcher.getTeam().get(0).getPokemonType());
-        assertEquals(10, BugCatcher.getTeam().get(1).getPokemonType());
-    }
-
-    @Test
-    void deleteTrainer_shouldReturnTrueWithMisty() {
-        this.restTemplate
-                .withBasicAuth(username, password)
-                .delete("http://localhost:" + port + "/trainers/Misty");
-
-        var misty = this.restTemplate
-                .withBasicAuth(username, password)
-                .getForObject("http://localhost:" + port + "/trainers/Misty", Trainer.class);
-        assertNull(misty);
+        assertEquals("Misty", trainers[1].getName());
     }
 }

@@ -1,4 +1,3 @@
-
 package com.miage.altea.tp.trainer_api;
 
 import com.miage.altea.tp.trainer_api.bo.Pokemon;
